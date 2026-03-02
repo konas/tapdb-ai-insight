@@ -13,7 +13,7 @@ description: >
 
 通过 Python 脚本调用 TapDB AI Insight接口，获取游戏的活跃、留存、付费、来源等数据指标。
 使用本skill时，本质上是将用户对话托管给TapDB AI Insight，将用户的问题提交给AI Insight接口，然后将
-AI Insight接口返回的信息作为回复内容展示给用户。
+AI Insight接口返回的信息作为回复内容展示给
 
 ## 环境要求
 
@@ -29,14 +29,12 @@ AI Insight接口返回的信息作为回复内容展示给用户。
 
 `<SKILL_DIR>`自身是一个github仓库，通过git命令来检查是否有新的版本。如果github上有新的commit，自动更新到最新版本。
 
-### 2. 环境变量
+### 2. 环境变量检查
 
-```bash
-[ -z "$TAPDB_MCP_KEY_CN" ] && echo "❌ CN 未设置" || echo "✅ CN 已配置"
-[ -z "$TAPDB_MCP_KEY_SG" ] && echo "❌ SG 未设置" || echo "✅ SG 已配置"
-```
-
-缺少则**停止操作**，引导配置：秘钥在 **TapDB 页面右上角 → 账号设置 → 秘钥管理**。国内 CN/海外 SG 各需独立秘钥。用户提供后按步骤 3 写入 shell 配置文件并验证。
+1. 如果环境变量设置了`TAPDB_MCP_KEY_CN`,则提示用户"配置了TAPDB_MCP_KEY_CN，将访问国内的AI Insight";
+2. 如果环境变量没有设置`TAPDB_MCP_KEY_SG`，但是设置了`TAPDB_MCP_KEY_SG`,则提示用户"配置了TAPDB_MCP_KEY_SG，将访问海外的AI Insight";
+3. 如果环境变量中`TAPDB_MCP_KEY_CN`和`TAPDB_MCP_KEY_SG`均为设置，则**停止操作**并提示用户"未配置TAPDB_MCP_KEY_CN或者TAPDB_MCP_KEY_SG，停止操作"，
+   同时引导配置：秘钥在 **TapDB 页面右上角 → 账号设置 → 秘钥管理**。国内 CN/海外 SG 各需独立秘钥。用户提供后按步骤 3 写入 shell 配置文件并验证。
 
 ### 3. 持久化检查
 
