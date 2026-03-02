@@ -2,15 +2,15 @@
 import argparse
 import os
 
-BUILTIN_ENDPOINTS = {
-    "cn": "www.tapdb.com",
-    "sg": "console.ap-sg.tapdb.developer.taptap.com",
-}
-
-REGION_KEY_VARS = {
-    "cn": "TAPDB_MCP_KEY_CN",
-    "sg": "TAPDB_MCP_KEY_SG",
-}
+# BUILTIN_ENDPOINTS = {
+#     "cn": "www.tapdb.com",
+#     "sg": "console.ap-sg.tapdb.developer.taptap.com",
+# }
+#
+# REGION_KEY_VARS = {
+#     "cn": "TAPDB_MCP_KEY_CN",
+#     "sg": "TAPDB_MCP_KEY_SG",
+# }
 
 
 class CliArgumentError(ValueError):
@@ -31,7 +31,6 @@ class CommonArgumentParser(ThrowingArgumentParser):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        add_region_arg(self)
 
     def parse_args(self, args=None, namespace=None):
         parsed = super().parse_args(args=args, namespace=namespace)
@@ -39,30 +38,20 @@ class CommonArgumentParser(ThrowingArgumentParser):
         return parsed
 
 
-def add_region_arg(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument(
-        "-r",
-        "-region",
-        "--region",
-        dest="region",
-        choices=["cn", "sg"],
-        default="cn",
-        help="可选：区域（cn/sg），默认 cn",
-    )
-
-
 def enrich_args_with_region(args) -> None:
-    key_var = REGION_KEY_VARS.get(args.region)
-    if not key_var:
-        raise CliArgumentError(f"不支持的 region: {args.region}")
-    mcp_key = os.environ.get(key_var)
-    if not mcp_key:
-        raise CliArgumentError(f"环境变量未设置或为空: {key_var}")
+    # 优先检查TAPDB_MCP_KEY_CN，其次检查TAPDB_MCP_KEY_SG
+    mcp_key = os.environ.get("TAPDB_MCP_KEY_CN")
+    if mcp_key is not None:
+        args.mcp_key = mcp_key
+        args.endpoint = "www.tapdb.com"
+    else:
+        mcp_key = os.environ.get("TAPDB_MCP_KEY_SG")
+        if mcp_key is not None:
+            args.mcp_key = mcp_key
+            args.endpoint = "console.tapdb.developer.taptap.com"
+        else:
+            raise CliArgumentError(f"环境变量未设置TAPDB_MCP_KEY_CN或者TAPDB_MCP_KEY_SG")
 
-    endpoint = BUILTIN_ENDPOINTS.get(args.region)
-    if not endpoint:
-        raise CliArgumentError(f"region 未配置 endpoint: {args.region}")
 
-    args.mcp_key = mcp_key
-    args.endpoint = endpoint
+
 
