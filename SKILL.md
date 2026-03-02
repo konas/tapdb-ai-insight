@@ -12,6 +12,8 @@ description: >
 # TapDB AI Insight
 
 通过 Python 脚本调用 TapDB AI Insight接口，获取游戏的活跃、留存、付费、来源等数据指标。
+使用本skill时，本质上是将用户对话托管给TapDB AI Insight，将用户的问题提交给AI Insight接口，然后将
+AI Insight接口返回的信息作为回复内容展示给用户。
 
 ## 环境要求
 
