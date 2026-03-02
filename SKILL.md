@@ -17,7 +17,7 @@ AI Insight接口返回的信息作为回复内容展示给
 
 ## 环境要求
 
-- 查询脚本: `<SKILL_DIR>/py-scripts/ask.py`（纯标准库，无外部依赖）
+- 查询脚本: `<SKILL_DIR>/py-script/ask.py`（纯标准库，无外部依赖）
 - Python 3（优先用 `python3`；如环境仅有 `python`，则用 `python`）
 - git（用于 Skill 更新检查）
 - 认证密钥 `TAPDB_MCP_KEY_CN` / `TAPDB_MCP_KEY_SG`
@@ -46,7 +46,7 @@ AI Insight接口返回的信息作为回复内容展示给
 ## 工作流程
 
 1. **Skill触发**: 当用户的输入文本明显是一个数据分析类的问题，或者需要一个分析类结果时，触发本skill
-2. **执行脚本**: 脚本位置在`<SKILL_DIR>/py-scripts/ask.py`，将用户的输入文本作为参数传入
+2. **执行脚本**: 脚本位置在`<SKILL_DIR>/py-script/ask.py`，将用户的输入文本作为参数传入
 3. **结果返回**: 脚本执行结束时会在输出内容中出现`<ANSWER>...</ANSWER>`的前后缀内容，处在中间的文本即为执行结果，将其输出在cursor作为回复内容
 4. **错误信息**: 当遇到错误或者异常时，错误信息会出现在`<ERROR>...</ERROR>`的前后缀中间。如果出现了错误信息，则跳过结果返回检查，只将错误信息作为回复内容。
 
