@@ -235,6 +235,8 @@ def main(argv=None) -> int:
 
     output_text = "".join(ws.answer_parts)
     output_text = re.sub(r'\n+', '\n', output_text)
+    print(f"<CONVERSATION_ID>{ws.conversation_id}</CONVERSATION_ID>")
+    print(f"<MESSAGE_ID>{ws.message_id}</MESSAGE_ID>")
     print("<ANSWER>")
     print(output_text)
     print("</ANSWER>")
