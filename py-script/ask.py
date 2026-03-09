@@ -214,11 +214,16 @@ def main(argv=None) -> int:
     print(f"args : {_args}")
     ws_url = f"wss://{_args.endpoint}/ad-plus/api/ws/conversation"
     print(f"连接ws : {ws_url}")
+
+    _headers = {
+            "MCP-KEY" : _args.chief_mcp_key,
+        }
+    if _args.alias_mcp_key is not None:
+        _headers['ALIAS-MCP-KEY'] = _args.alias_mcp_key
+
     ws = AIInsightWSApp(
         ws_url,
-        header={
-            "MCP-KEY" : _args.mcp_key,
-        },
+        header=_headers,
         on_open=on_open,
         on_message=on_message,
         on_error=on_error,

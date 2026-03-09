@@ -39,18 +39,47 @@ class CommonArgumentParser(ThrowingArgumentParser):
 
 
 def enrich_args_with_region(args) -> None:
-    # 优先检查TAPDB_MCP_KEY_CN，其次检查TAPDB_MCP_KEY_SG
-    mcp_key = os.environ.get("TAPDB_MCP_KEY_CN")
-    if mcp_key is not None:
-        args.mcp_key = mcp_key
+    # 同时读取TAPDB_MCP_KEY_CN和TAPDB_MCP_KEY_SG
+    region = os.environ.get("TAPDB_MCP_ENDPOINT")
+    if region is None:
+        region = 'cn'
+
+    region = region.lower()
+    if region == 'cn':
         args.endpoint = "www.tapdb.com"
+        mcp_key_pair = ["TAPDB_MCP_KEY_CN","TAPDB_MCP_KEY_SG"]
+    elif region == 'sg':
+        args.endpoint = "console.tapdb.developer.taptap.com"
+        mcp_key_pair = ["TAPDB_MCP_KEY_SG","TAPDB_MCP_KEY_CN"]
     else:
-        mcp_key = os.environ.get("TAPDB_MCP_KEY_SG")
-        if mcp_key is not None:
-            args.mcp_key = mcp_key
-            args.endpoint = "console.tapdb.developer.taptap.com"
-        else:
-            raise CliArgumentError(f"环境变量未设置TAPDB_MCP_KEY_CN或者TAPDB_MCP_KEY_SG")
+        raise CliArgumentError(f"TAPDB_MCP_ENDPOINT必须只能是cn或者sg")
+
+
+    def read_mcp_keys(region, mcp_key_pair):
+        chief_mcp_key = os.environ.get(mcp_key_pair[0])
+        if chief_mcp_key is None:
+            raise CliArgumentError(f"当TAPDB_MCP_ENDPOINT={region}时,{mcp_key_pair[0]}必须存在")
+
+        alias_mcp_key = os.environ.get(mcp_key_pair[1])
+
+        return chief_mcp_key, alias_mcp_key
+
+    chief_mcp_key,alias_mcp_key = read_mcp_keys(region, mcp_key_pair)
+    args.chief_mcp_key = chief_mcp_key
+    args.alias_mcp_key = alias_mcp_key
+
+
+    # mcp_key = os.environ.get("TAPDB_MCP_KEY_CN")
+    # if mcp_key is not None:
+    #     args.mcp_key = mcp_key
+    #     args.endpoint = "www.tapdb.com"
+    # else:
+    #     mcp_key = os.environ.get("TAPDB_MCP_KEY_SG")
+    #     if mcp_key is not None:
+    #         args.mcp_key = mcp_key
+    #         args.endpoint = "console.tapdb.developer.taptap.com"
+    #     else:
+    #         raise CliArgumentError(f"环境变量未设置TAPDB_MCP_KEY_CN或者TAPDB_MCP_KEY_SG")
 
 
 
